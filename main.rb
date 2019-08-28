@@ -1,10 +1,11 @@
 class Word
     # Stores the provided word in an instance variable and
     # setups up any other instance variables.
-    attr_reader :guessedWord
+    attr_reader :guessedWord, :health
     def initialize(word)
         @word = word
         @guessedWord = word
+        @health = 3
         initial_hide_word()
     end
 
@@ -34,11 +35,12 @@ class Word
         if @word.include? letter
             if(@word.count(letter) > 1)
                 while(@word.include? letter)
+                    puts "Hit this while loop"
                     index = @word.index(letter)
-                    @word.slice!(index,1)
+                    @word.slice!(index,0)
                     @word[index] = '_'
 
-                    puts @word
+                    puts "Word" + @word
                     @guessedWord.slice!(index,0)
                     @guessedWord[index] = letter
 
@@ -58,6 +60,8 @@ class Word
             return true
         end
         p "Word does not contain #{letter}"
+        @health -= 1
+        p "you have #{@health} tries left"
         return false
     end
   
@@ -107,7 +111,7 @@ class Word
     # Run the game loop, which continues until the player wins or loses.
     def game_loop
 
-        while @mysteryWord.guessed_all_correct? == false do
+        while @mysteryWord.guessed_all_correct? == false && @mysteryWord.health > 0 do
             p "The word is #{@mysteryWord.guessedWord}"
             p "Please enter a letter"
             @mysteryWord.guess?(gets.chomp)
